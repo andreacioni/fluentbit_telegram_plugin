@@ -43,7 +43,7 @@ func FLBPluginFlushCtx(ctx, data unsafe.Pointer, length C.int, tag *C.char) int 
 	chatId := output.FLBPluginGetContext(ctx).(string)
 	apiKey := output.FLBPluginGetContext(ctx).(string)
 
-	log.Printf("[%s] flush called", PluginName)
+	log.Printf("[%s] flush called %s %s", PluginName, apiKey, chatId)
 
 	dec := output.NewDecoder(data, int(length))
 
@@ -62,7 +62,10 @@ func FLBPluginFlushCtx(ctx, data unsafe.Pointer, length C.int, tag *C.char) int 
 		}
 		str += "}"
 
-		SendTelegramMessage(apiKey, chatId, str)
+		if err := SendTelegramMessage(apiKey, chatId, str); err != nil {
+			log.Printf("[%s] telegram notification failed: %+v", PluginName, err)
+			return output.FLB_ERROR
+		}
 	}
 
 	return output.FLB_OK
