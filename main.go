@@ -40,8 +40,8 @@ func FLBPluginFlushCtx(ctx, data unsafe.Pointer, length C.int, tag *C.char) int 
 	// Gets called with a batch of records to be written to an instance.
 
 	// Type assert context back into the original type for the Go variable
-	chatId := output.FLBPluginGetContext(ctx).(string)
-	apiKey := output.FLBPluginGetContext(ctx).(string)
+	apiKey := output.FLBPluginConfigKey(ctx, "api_key")
+	chatId := output.FLBPluginConfigKey(ctx, "chat_id")
 
 	log.Printf("[%s] flush called %s %s", PluginName, apiKey, chatId)
 
