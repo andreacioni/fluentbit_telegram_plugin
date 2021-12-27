@@ -45,8 +45,8 @@ func FLBPluginFlushCtx(ctx, data unsafe.Pointer, length C.int, tag *C.char) int 
 
 	dec := output.NewDecoder(data, int(length))
 
-	apiKey := output.FLBPluginConfigKey(plugin, "api_key")
-	chatId := output.FLBPluginConfigKey(plugin, "chat_id")
+	apiKey := output.FLBPluginConfigKey(ctx, "api_key")
+	chatId := output.FLBPluginConfigKey(ctx, "chat_id")
 
 	for {
 		ret, ts, record := output.GetRecord(dec)
@@ -56,12 +56,12 @@ func FLBPluginFlushCtx(ctx, data unsafe.Pointer, length C.int, tag *C.char) int 
 
 		// Print record keys and values
 		timestamp := ts.(output.FLBTime)
-		str := fmt.Sprintf("[%d]: [%s, {", C.GoString(tag), timestamp.String())
+		str := fmt.Sprintf("%s [%s, {", C.GoString(tag), timestamp.String())
 
 		for k, v := range record {
 			str += fmt.Sprintf("\"%s\": %v, ", k, v)
 		}
-		str += fmt.Sprintf("}\n")
+		str += "}"
 
 		SendTelegramMessage(apiKey, chatId, str)
 	}
