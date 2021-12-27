@@ -31,7 +31,7 @@ func FLBPluginInit(plugin unsafe.Pointer) int {
 	apiKey := output.FLBPluginConfigKey(plugin, "api_key")
 	chatId := output.FLBPluginConfigKey(plugin, "chat_id")
 
-	log.Printf("[%s] api_key = %q, chat_id = %q", PluginName, apiKey, chatId)
+	log.Printf("[%s] [info] api_key = %q, chat_id = %q", PluginName, apiKey, chatId)
 
 	// Set the context to point to any Go variable
 	output.FLBPluginSetContext(plugin, TelegramCfg{
@@ -48,8 +48,6 @@ func FLBPluginFlushCtx(ctx, data unsafe.Pointer, length C.int, tag *C.char) int 
 
 	// Type assert context back into the original type for the Go variable
 	cfg := output.FLBPluginGetContext(ctx).(TelegramCfg)
-
-	log.Printf("[%s] flush called %s %s", PluginName, cfg.apiKey, cfg.chatId)
 
 	dec := output.NewDecoder(data, int(length))
 
@@ -69,7 +67,7 @@ func FLBPluginFlushCtx(ctx, data unsafe.Pointer, length C.int, tag *C.char) int 
 		str += "}"
 
 		if err := SendTelegramMessage(cfg.apiKey, cfg.chatId, str); err != nil {
-			log.Printf("[%s] telegram notification failed: %+v", PluginName, err)
+			log.Printf("[%s] [error] telegram notification failed: %+v", PluginName, err)
 			return output.FLB_ERROR
 		}
 	}
@@ -79,6 +77,7 @@ func FLBPluginFlushCtx(ctx, data unsafe.Pointer, length C.int, tag *C.char) int 
 
 //export FLBPluginExit
 func FLBPluginExit() int {
+	log.Printf("[%s] [info] exit", PluginName)
 	return output.FLB_OK
 }
 

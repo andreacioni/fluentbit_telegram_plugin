@@ -12,7 +12,7 @@ func SendTelegramMessage(apiKey, chatId, text string) error {
 	data.Set("chat_id", chatId)
 	data.Set("text", text)
 
-	resp, err := http.Post("https://api.telegram.org/bot"+apiKey+"/sendMessage", "application/x-www-form-urlencoded", strings.NewReader(data.Encode()))
+	resp, err := http.Post(fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", apiKey), "application/x-www-form-urlencoded", strings.NewReader(data.Encode()))
 
 	if err != nil {
 		return err
