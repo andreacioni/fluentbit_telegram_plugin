@@ -59,12 +59,11 @@ func FLBPluginFlushCtx(ctx, data unsafe.Pointer, length C.int, tag *C.char) int 
 
 		// Print record keys and values
 		timestamp := ts.(output.FLBTime)
-		str := fmt.Sprintf("%s [%s, {", C.GoString(tag), timestamp.String())
+		str := fmt.Sprintf("%s %s\n", C.GoString(tag), timestamp.String())
 
 		for k, v := range record {
-			str += fmt.Sprintf("\"%s\": %s, ", k, v)
+			str += fmt.Sprintf("%s: %s\n", k, v)
 		}
-		str += "}"
 
 		if err := SendTelegramMessage(cfg.apiKey, cfg.chatId, str); err != nil {
 			log.Printf("[%s] [error] telegram notification failed: %+v", PluginName, err)
