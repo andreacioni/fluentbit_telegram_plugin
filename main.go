@@ -64,7 +64,7 @@ func FLBPluginFlushCtx(ctx, data unsafe.Pointer, length C.int, tag *C.char) int 
 		str := fmt.Sprintf("%s [%s, {", C.GoString(tag), timestamp.String())
 
 		for k, v := range record {
-			str += fmt.Sprintf("\"%s\": %v, ", k, v)
+			str += fmt.Sprintf("\"%s\": %s, ", k, v)
 		}
 		str += "}"
 
